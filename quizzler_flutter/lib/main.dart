@@ -74,8 +74,7 @@ class _QuizPageState extends State<QuizPage> {
             ),
             onPressed: () {
               setState(() {
-                scoreKeeper.add(
-                    Icon(
+                scoreKeeper.add(Icon(
                   Icons.check,
                   color: Colors.green,
                 ));
@@ -96,7 +95,15 @@ class _QuizPageState extends State<QuizPage> {
                 fontSize: 20.0,
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                scoreKeeper.add(
+                    Icon(
+                  Icons.check,
+                  color: Colors.red,
+                ));
+              });
+            },
           ),
         )),
         Row(
