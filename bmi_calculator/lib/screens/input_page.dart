@@ -7,6 +7,7 @@ import '../constants.dart';
 import 'results_page.dart';
 import '../components/bottom_button.dart';
 import '../components/round_icon_button.dart';
+import 'package:bmi_calculator/calculator_brain.dart';
 
 enum Gender {
   male,
@@ -23,30 +24,6 @@ class _InputPageState extends State<InputPage> {
   int height = 180;
   int weight = 60;
   int age = 18;
-
-  // //Butona tıklayınca arka plan rengi değiştirme
-  // Color maleCardColour = inactiveCardColour;
-  // Color femaleCardColour=inactiveCardColour;
-  // //1=male and 2=female;
-  // void updateColour(Gender selectedGender){
-  //   //male card pressed
-  //   if(selectedGender ==Gender.male){
-  //     if(maleCardColour==inactiveCardColour){
-  //       maleCardColour=activeCardColour;
-  //       femaleCardColour=inactiveCardColour;
-  //     }else{
-  //       maleCardColour=inactiveCardColour;
-  //     }
-  //   }
-  //   if(selectedGender==Gender.female){
-  //     if(femaleCardColour==inactiveCardColour){
-  //       femaleCardColour=activeCardColour;
-  //       maleCardColour=inactiveCardColour;
-  //     }else {
-  //       femaleCardColour=inactiveCardColour;
-  //     }
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +44,9 @@ class _InputPageState extends State<InputPage> {
                       selectedGender = Gender.male;
                     });
                   },
-                  colour: selectedGender == Gender.male
-                      ? kActiveCardColour
-                      : kInactiveCardColour,
+                   colour:
+                    selectedGender == Gender.male ? Color(0xFF101E33) : Color(0xFF111328),
+
                   cardChild: IconContent(
                     icon: FontAwesomeIcons.mars,
                     label: 'MALE',
@@ -86,6 +63,7 @@ class _InputPageState extends State<InputPage> {
                     colour: selectedGender == Gender.female
                         ? kActiveCardColour
                         : kInactiveCardColour,
+
                     cardChild: IconContent(
                       icon: FontAwesomeIcons.venus,
                       label: 'FEMALE',
@@ -192,48 +170,46 @@ class _InputPageState extends State<InputPage> {
                   ),
                 ),
                 Expanded(
-                  child: Row(
-                    children: <Widget>[
-                      ReusableCard(
-                        colour: kActiveCardColour,
-                        cardChild: Column(
+                  child: ReusableCard(
+                    colour: kActiveCardColour,
+                    cardChild: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'AGE',
+                          style: kLabelTextStyle,
+                        ),
+                        Text(
+                          age.toString(),
+                          style: kNumberTextStyle,
+                        ),
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text(
-                              'AGE',
-                              style: kLabelTextStyle,
+                            RoundIconButton(
+                              icon: FontAwesomeIcons.minus,
+                              onPressed: () {
+                                setState(() {
+                                  age--;
+                                });
+                              },
                             ),
-                            Text(
-                              age.toString(),
-                              style: kNumberTextStyle,
+                            SizedBox(
+                              width: 10.0,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                RoundIconButton(
-                                    icon: FontAwesomeIcons.minus,
-                                    onPressed: () {
-                                      setState(() {
-                                        age--;
-                                      });
-                                    }),
-                                SizedBox(
-                                  width: 10.0,
-                                ),
-                                RoundIconButton(
-                                    icon: FontAwesomeIcons.plus,
-                                    onPressed: () {
-                                      setState(() {
-                                        age++;
-                                      });
-                                    })
-                              ],
-                            )
+                            RoundIconButton(
+                              icon: FontAwesomeIcons.plus,
+                              onPressed: () {
+                                setState(() {
+                                  age++;
+                                });
+                              },
+                            ),
                           ],
-                        ),
-                        onPress: () {},
-                      ),
-                    ],
+                        )
+                      ],
+                    ),
+                    onPress: () {},
                   ),
                 ),
               ],
@@ -242,10 +218,17 @@ class _InputPageState extends State<InputPage> {
           ButtomButton(
             buttonTitle: 'CALCULATE',
             onTap: () {
+              CalculatorBrain calc =
+                  CalculatorBrain(weight: weight, height: height);
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ResultsPage(),
+                  builder: (context) => ResultsPage(
+                    bmiResult:calc.calculateBMI() ,
+                    resultText:calc.getResult() ,
+                    interpretation: calc.getInterpretation(),
+                  ),
                 ),
               );
             },
@@ -255,7 +238,3 @@ class _InputPageState extends State<InputPage> {
     );
   }
 }
-
-
-
-
