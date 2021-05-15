@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'coin_data.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:io' show Platform;
+
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -10,7 +12,8 @@ class PriceScreen extends StatefulWidget {
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
 
-  List<DropdownMenuItem<String>> getDropdownItems() {
+  DropdownButton<String> androidDropDown() {
+
     List<DropdownMenuItem<String>> dropdownItems = [];
 
     for (String currency in currenciesList) {
@@ -21,23 +24,49 @@ class _PriceScreenState extends State<PriceScreen> {
       dropdownItems.add(newItem);
     }
 
-    return dropdownItems;
+    return DropdownButton<String>(
+        value: selectedCurrency,
+        items: dropdownItems,
+        onChanged: (value) {
+          setState(() {
+            selectedCurrency = value!;
+          },);
+        },);
   }
 
-  List <Widget> getPickerItems(){
-    List<Text> pickerItems = [];
-    for(String currency in currenciesList){
 
+  CupertinoPicker iOSPicker(){
+
+    List<Text> pickerItems = [];
+    for (String currency in currenciesList) {
       pickerItems.add(Text(currency));
     }
-    return pickerItems;
-    
+
+
+     return CupertinoPicker(
+        backgroundColor: Colors.lightBlue,
+        itemExtent: 32.0,
+        onSelectedItemChanged: (selectedIndex) {
+      print(selectedIndex);
+    },
+    children: pickerItems,);
   }
 
+
+  Widget getPicker(){
+    if(Platform.isIOS){
+      return iOSPicker();
+    }
+    else if(Platform.isAndroid){
+      return androidDropDown();
+    }else{
+      return androidDropDown();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    getDropdownItems();
+
 
     return Scaffold(
       appBar: AppBar(
@@ -73,26 +102,11 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: CupertinoPicker(
-              backgroundColor: Colors.lightBlue,
-              itemExtent: 32.0,
-              onSelectedItemChanged: (selectedIndex) {
-                print(selectedIndex);
-              },
-              children: getPickerItems(),
+            child:getPicker() ,
             ),
-          ),
+
         ],
       ),
     );
   }
 }
-
-// DropdownButton<String>(
-// value: selectedCurrency,
-// items: getDropdownItems(),
-// onChanged: (value) {
-// setState(() {
-// selectedCurrency = value!;
-// });
-// }),
